@@ -1,0 +1,45 @@
+Crater
+========================================
+A low-cost Fire Fighting robot
+
+Drive system uses two motors, with encoders and a caster. Sensor array 
+consists of a panning servo with IR ranger and a phototransistor and shield. 
+Incorporates a single UV sensor on top of the robot to detect flame in a room. 
+
+Speed - 88RPM, 2.75” Wheels, yields 12.5” per second.
+
+To minimize external components and port usage, we use the internal 8mhz clock, 
+and share the programming and LCD ports (we can pop the LCD off to program if 
+necessary.)
+
+Navigation
+----------------------------------------
+We use an a priori topological map with limited metrics for navigation. We 
+define the neighborhood of the node to be approximately 24 inches in diameter. 
+In hallways, we turn the head 30 degrees to a side and follow the wall. If 
+we are looking for a forward wall, we begin forward wall checks when we enter 
+the neighborhood of the node. If we are looking for a wall loss, the robot does 
+periodic checks for wall loss (about every 3”) when it is in the neighborhood 
+of the node. Turns are encoder-based. Speed is not regulated.
+
+Fire Detection
+----------------------------------------
+We use a UV LED, with reverse bias, to detect UV put off by a flame. We charge 
+the negative end of the LED, and time the fall. Once we have detected the 
+presence of the fire, we pan the robot and scan with a photodiode for the 
+fire’s appearance. 
+
+Schematic for OP599a sensors 
+ 
+          5V
+          |
+          R = 47K
+  analog__| 
+          |
+          C (flat side)
+          + op599a
+          E 
+          |
+         Gnd
+
+

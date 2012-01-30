@@ -1,0 +1,569 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><html>
+
+<head>
+  <title>Avrra: Documentation</title>
+  <meta name="description" content="Avrra, the AVR robot API, created by Michael Ferguson.">
+  <meta name="keywords" content="Avrra avr robot">
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+  <link rel="stylesheet" media="screen" type="text/css" href="default.css" >
+</head>
+<body>
+  <div id="page">
+    <div id="header"><h1><a name="#top">Avrra, the AVR Robot API</a></h1><hr>
+	<h3>Release A.0: Revised February 28, 2009</h3></div>    
+
+	<div id="license">
+	Copyright (c) 2004-2009, Michael E. Ferguson<br>
+	All rights reserved.<br><br>
+ 
+	Redistribution and use in source and binary forms, with or without modification, are 
+	permitted provided that the following conditions are met:<br>
+	<ul>
+	<li>Redistributions of source code must retain the above copyright notice, this list of 
+		conditions and the following disclaimer.</li>
+	<li>Redistributions in binary form must reproduce the above copyright notice, this list  
+		of conditions and the following disclaimer in the documentation and/or other materials  
+		provided with the distribution.</li>
+	<li>Neither the name of AVRRA nor the names of its contributors may be used to endorse or 
+		promote products derived from this software without specific prior written permission.</li>
+	</ul>
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"AND 
+	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+	WARRANTIES OF MERCHANT ABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+	FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+	DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS  
+	OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	</div>
+
+	<div id="toc">
+	<h3><a name="#toc">Table Of Contents</a></h3><hr>
+	<a href="#what">What is AVRRA?</a><br>
+    <a href="#started">Getting Started</a><br>
+	<a href="#driver">The Driver Model</a><br>
+    <a href="#stds">Standards</a><br>
+    <a href="#examples">Examples</a><br>
+	Low-Level Drivers<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#digital">Digital Driver</a><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#analog">Analog Driver</a><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#serial">Serial Drivers</a><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#clock">Clock Driver</a><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#i2c">I2C Driver</a><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#utils">Utility Functions</a><br>
+	Sensor-Level Drivers<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#sharpir">Sharp IR Ranger Driver</a><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#srf05">SRF-05 Sonar Driver</a><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#maxbotix">Maxbotix: Sonar Driver</a><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#i2csonar">SRF-08: I2C Sonar Driver</a><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#i2ccmps">CMPS-03:I2C Compass Driver</a><br>
+    <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#i2cexpand">PCF8574: I2C I/O Expander</a><br>-->
+    <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#i2ir">I2C-IR: I2C IR Ranger</a><br>-->
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#encoders">Encoder Driver</a><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#avrcam">AVRcam Driver</a><br>
+	Output-Level Drivers<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#motor">Motor Driver</a><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ax12">AX-12 Servo Driver</a><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#servo">Servo Driver</a><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#sp03">Speech Synthesizer Driver</a><br>
+	<!--<a href="#xrseries">XR-Series Control: The Next Step</a>-->
+    <a href="#awards">Awards and Distinctions</a><br>
+	</div>
+
+    <div id="content">
+	<h3><a name="what">What is AVRRA?</a></h3><hr>
+	AVRRA is the AVR-Robot-API. It is designed to be an easy to use API for programming robots 
+    with AVR micro controllers. It abstracts port setup and usage, as well as other low-level hardware 
+	functions. Support Drivers are provided for many popular sensors. Additionally, AVRRA provides 
+	direct support for several low-cost AVR boards on the market, such 
+	as the ARC Robot Controller (when upgraded to a mega324), AVRRA Mini, and AVRRA Lite. 
+    It is released under the BSD License, listed above.<br><br>
+
+    <i>NOTE:</i> - The API currently supports the ATMEGA168 and ATMEGA324. Support for the 368, 164, 
+    and 644 is pending.<br><br>
+    
+	<h3><a name="started">Getting Started</a></h3><hr>
+    System requirements:
+    <div class="info">
+		<p><ul><li>AVR GCC compiler, AVRDUDE programmer</li>    
+               <li>Subversion client, for bleeding edge source</li></ul></p>
+	</div><br>
+    AVRRA requires no installation. It is simply a collection of header files written in C. Currently,
+    there are three ways to get AVRRA: a <i>STABLE</i> release via ZIP/TAR files only, or the bleeding 
+    edge version from either ZIP/TAR or the subversion directory.<br><br>
+    <div class="info">
+		To get the <b>STABLE</b> release:<br>
+        Go to http://avrra.sourceforge.net and select the newest release from <a href="https://sourceforge.net/project/showfiles.php?group_id=166555">
+        Downloads</a><br>
+        <br>
+        To get the <b>DEVELOPMENT</b> (bleeding edge) release:<br>
+        Go to the <a href="http://svn.blunderingbotics.com">Blundering Robotics</a> 
+        subversion repository. Clicking on <i>Tarball</i> next to a file or folder name will
+	    allow you to download it. You will likely want to download just the 
+	    <i>avrra/library</i> folder, most of the other information in the avrra directory is
+	    not documented yet. To check out a working copy on a unix machine:<br>
+	    <pre>    svn checkout svn://www.blunderingbotics.com/avrra/library avrra/library</pre>
+        Note that the example directory is /avrra/library/example if you are using subversion directly.
+        <br>
+        With either installation, you should set up your directory structure as such:<br>
+<pre>    /projectdirectory    
+        /avrra
+            /library
+                /dev
+        /example
+        /robot1
+        /robot2
+        ...</pre>
+        In this way, the path from any robot file to the avrra files will be:
+        <pre>    ../avrra/library/file.h </pre>
+	</div><br>
+    
+    Once you have downloaded the AVRRA directories, you can begin building robots! But first, 
+    a little background on AVRRA. AVRRA is comprised of a set of header files, each containing
+    a driver for a specific piece of hardware. <br><br>
+    <center><a href="#toc">Back to Contents</a></center>
+
+    <h3><a name="driver">Driver Model</a></h3><hr>
+    Most drivers have a name which is also used as the name of the file (driverName.h). 
+	Each driver has, at the minimum, the following:    
+    <ul>
+        <li>driverNameInit()</li>
+        <li>driverNameGetData() and/or driverNameSetData()</li>
+    </ul>
+	Some Init() functions are only for driver model compliance and do not have to be called, 
+	refer to the documentation for more specifics.<br><br>
+
+	Base-level drivers provide basic functionality for using things such as analog ports,
+	digital ports, and the serial port. An I2C driver is currently under development.<br><br>
+
+	Sensor-level drivers provide functionality for specific popular sensors. The sharp IR 
+	driver provides functions which take a reading from the sensor and convert it to a 
+	reading. Output-level drivers are similar. <br><br> 
+
+    AVRRA defines easy to use port numbering. Port A, Pin 1 is #0, Pin 2 is #1... and Port B, 
+    Pin 1 is #8. The numbers continue on sequentially.<br><br> 
+    
+    There are special drivers, called "devices" which define a specific board, such as the AVRRA lite.
+    They contain motor drivers, port definitions, and board initialization.
+    These files are in the /avrra/library/dev folder. Currently the following exist:
+	<div class="info"><ul>
+	<li>dev\arc.h – for the ARC1.1 AVR board (m324).</li>
+	<li>dev\lite.h – for the AVRRA Lite board (m324).</li> 
+	<li>dev\mini.h – for the AVRRA Mini board (m168).</li>
+	</ul></div><br>
+    <center><a href="#toc">Back to Contents</a></center>
+
+    <h3><a name="stds">Standards</a></h3><hr>
+    In addition to standard naming conventions, we have to define standards as to measurement systems. 
+    We currently use what we call a reduced-fractional SI system of measurement. Thus, we use the SI units,
+    but prefer those prefixes which reduce the need for fractional or decimal parts in smaller robots. For
+    instance, distance is always is centimeters, rather than meters.
+    <div class="info"><ul>
+        <li>Length - centimeters</li>
+        <li>Rotation - degrees</li>
+    </ul></div>
+    We also have several functions, contained in utils.h, which allow easy conversion to other systems:
+    <div class="info"><ul>
+        <li>INCHES(reading) - converts CM to INCHES (integer-based).</li>
+        <li>URCP(reading) - converts CM to URCP (integer-based).</li>
+    </ul></div>
+
+    <h3><a name="stds">Limitations</a></h3><hr>
+	AVRRA is still a very young API. Support for certain items is still 
+	very limited. The digital driver is a resource hog - It uses almost 700 bytes of code and will be 
+	updated shortly. This API primarily targets the ATMEGA324 and ATMEGA168, 
+    and only supports clock frequencies of 14.7456MHz (Such as found on the Mini&Lite Boards).
+	Documentation is currently sparse.<br><br>
+	<div class="info"><b>Items anticipated for V1.0 release:</b>
+	<ul>	
+	<li>Update digital driver, as set of macros.</li>
+	<li>Clock independence for srf05, clock, and servo libraries.</li>
+    <li>Document servo and encoder libraries</li>
+	</ul>
+    <b>Items anticipated for other future release:</b>
+	<ul>	
+	<li>LCD drivers.</li>
+    <li>Add standard support for different systems of units.</li>
+    <li>Expand AX-12 servo library to handle sync write.</li>
+	</ul></div><br>
+    <center><a href="#toc">Back to Contents</a></center>
+
+    <h3><a name="examples">Examples</a></h3><hr>
+    Below is an example, which will print IR readings to serial output:
+	<div class="info"><pre>// Robot specific port definitions
+#define PIN_HEAD_IR		0x00		// PA[0] - HEAD IR
+
+#include "../avrra/dev/lite.h"
+		
+int main(){	
+    int x;
+    
+    // initialize stuff
+    motorInit();
+    gp2d12Init(PIN_HEAD_IR);
+    serialInit(115200);
+    Print("?Hello\n");
+
+    while(1){ 
+        x = gp2d12GetData(PIN_HEAD_IR);
+        Print("?IR=");
+        PrintNumber(x);
+        Print("\n");
+        delayms(500);
+    }
+};</pre></div><br>
+    <center><a href="#toc">Back to Contents</a></center>
+
+	<h3>Low-Level Drivers</h3>
+	<div class="driver"><h2><a name="digital">Digital Driver (digital.h)</a></h2><hr>
+		<p class="desc">The digital driver is used to access any digital port on the AVR. Ports 
+		are mapped to a linear address space: Port A has bits mapped to 0-7, Port B has bits 
+		mapped to 8-15, etc. Currently 31 or PortD7 is the highest port accessible through the 
+		digital driver. </p>
+		<h3>Definitions</h3>
+			<table class="defs" border="0">
+			<tr><td width="300px"><font color=#00F>#define</font> AVRRA_HIGH</td><td>0xFF</td></tr>
+			<tr><td><font color=#00F>#define</font> AVRRA_LOW</td><td>0x00</td></tr>
+			<tr><td><font color=#00F>#define</font> AVRRA_INPUT</td><td>0x00</td></tr>
+			<tr><td><font color=#00F>#define</font> AVRRA_OUTPUT</td><td>0xFF</td></tr>
+			</table>	
+		<h3>Functions</h3>
+			<p class="funcs">
+			<font color=#00F>void</font> digitalInit(<font color=#00F>void</font>) – does nothing, simply for driver model compliance.<br>
+			<font color=#00F>char</font> digitalGetData(<font color=#00F>char</font> channel) – returns the value (1 or 0) of port channel.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Acceptable channel values: 0x00 (PA[0])to 0x1F (PD[7]).<br>
+			<font color=#00F>void</font> digitalSetData(<font color=#00F>char</font> channel, <font color=#00F>char</font> data) – sets port channel to data (1 or 0).<br>
+			<font color=#00F>void</font> digitalSetDirection(<font color=#00F>char</font> channel, <font color=#00F>char</font> dir) – sets port channel to input or output.<br>
+			</p>
+	</div><br>
+
+	<div class="driver"><h2><a name="analog">Analog Driver (analog.h)</a></h2><hr>
+		<p class="desc">The analog driver is used to get a reading from the analog input 
+		ports. It handles all of the functions for setting the analog channel to the analog 
+		to digital converter.</p>
+		<h3>Functions</h3>
+			<p class="funcs">	
+			<font color=#00F>void</font> analogInit(<font color=#00F>void</font>) – fires up physical hardware for ADC.<br>
+			<font color=#00F>char</font> analogGetData8(<font color=#00F>char</font> channel) – returns a reading from port channel. <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reading is 8-bits where 0x00 = 0VDC and 0xFF = 5VDC.<br>
+            <font color=#00F>char</font> analogGetData10(<font color=#00F>char</font> channel) – returns a reading from port channel. <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reading is 10-bits where 0x00 = 0VDC 
+				and 0x1FF = 5VDC.<br>
+			</p>
+	</div><br>
+
+	<div class="driver"><h2><a name="serial">Serial Driver (serial.h)</a></h2><hr>
+		<p class="desc">The serial driver implements a full duplex serial port on USART(0), 
+		the receiving end is buffered and interrupt driven. It is also commonly attached to 
+		a wireless output for off board debugging. </p>
+		<h3>Functions</h3>
+			<p class="funcs">
+			<font color=#00F>void</font> serialInit(<font color=#00F>long</font> baud) – initializes the driver<br>
+			<font color=#00F>signed char</font> serialRead() – gets a <font color=#00F>char</font>acter (0 if none in buffer).<br>
+			<font color=#00F>void</font> serialWrite(<font color=#00F>unsigned char</font> data) – sends a character.<br>
+			<font color=#00F>int</font> serialAvailable() – returns number of characters available in the buffer. <br>
+			<font color=#00F>void</font> serialFlush() – empties buffer.<br>
+			<font color=#00F>void</font> Print(<font color=#00F>const char</font> *psz)) – prints a string to the serial port. <br>
+			<font color=#00F>void</font> PrintNumber(<font color=#00F>int</font> value) – prints a integer (0-999) to the serial port.<br>
+			</p>
+	</div><br>
+
+	<div class="driver"><h2>Serial1 Driver (serial1.h)</h2><hr>
+		<p class="desc">This driver, for the ATMEGA324P, implements a second full duplex, 
+		buffered serial port. </p>
+		<h3>Functions</h3>
+			<p class="funcs">
+			<font color=#00F>void</font> serial1Init(<font color=#00F>long</font> baud) – initializes the driver<br>
+			<font color=#00F>signed char</font> serial1Read() – gets a character (0 if none in buffer).<br>
+			<font color=#00F>void</font> serial1write(<font color=#00F>char</font> data) – sends a character.<br>
+			</p>
+	</div><br>
+
+	<div class="driver"><h2><a name="clock">Clock Driver (clock.h)</a></h2><hr> 
+		<p class="desc">The clock driver creates a 60Hz system clock on timer2. <br><br>
+		<font color=#F00>Issues:</font> Currently is clock dependent. This should be 
+		fixed soon. 
+		Requires a 14.7546MHz clock.  </p>
+		<h3>Definitions</h3>
+			<p class="defs" border="0">
+			<font color=#00F>#define</font> TGT_HAS_CLOCK
+			</p>	
+		<h3>Functions</h3>
+			<p class="funcs">
+			<font color=#00F>void</font> clockInit(<font color=#00F>void</font>) – initializes the 60Hz system clock.<br>
+			<font color=#00F>void</font> clockInit(<font color=#00F>int</font> hertz) – initializes custom clock (FUTURE RELEASES?)<br>
+			<font color=#00F>void</font> clockDisable(<font color=#00F>void</font>) – stops clock.<br>
+			<font color=#00F>void</font> clockEnable(<font color=#00F>void</font>) – restarts clock, does not affect uptime.<br>
+			t_time getClock(<font color=#00F>void</font>) – returns system uptime, i.e. number of ticks of clock.<br>
+			</p>
+	</div><br>
+
+	<div class="driver"><h2><a name="i2c">I2C Driver (I2C.h)</a></h2><hr> 
+		<p class="desc">Provides access to the I2C bus, at 100KHz. Currently does not implement
+		sort of interrupt driven communications.</p>
+		<h3>Definitions</h3>
+			<table class="defs" border="0">
+			<tr><td width="300px"><font color=#00F>#define</font> I2C_READ</td><td>1</td></tr>
+			<tr><td><font color=#00F>#define</font> I2C_WRITE</td><td>0</td></tr>
+			</table>
+		<h3>Functions</h3>
+			<p class="funcs">
+			<font color=#00F>void</font> i2cInit(<font color=#00F>void</font>) – starts the I2C hardware.<br>
+			<font color=#00F>void</font> i2cStart(<font color=#00F>unsigned char</font> address) – issues start condition, sends address/direction. <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0 = success.<br>
+			<font color=#00F>void</font> <font color=#00F>void</font> i2cStop(<font color=#00F>void</font>) – issues stop condition, releases bus.<br>
+			<font color=#00F>unsigned char</font> i2cReadAck(<font color=#00F>void</font>) – read one byte from bus, request more.<br>
+			<font color=#00F>unsigned char</font> i2cReadNck(<font color=#00F>void</font>) – read one byte from bus, issue stop condition.<br>
+			</p>
+	</div><br>
+
+	<div class="driver"><h2><a name="utils">Utility Functions (utils.h)</h2><hr> 
+		<p class="desc">Provides several functions and definitions.</p>
+		<h3>Definitions</h3>
+			<p class="defs">
+			<font color=#00F>#define</font> SetBit(sfr, bit)<br>
+			<font color=#00F>#define</font> ClearBit(sfr, bit)<br>
+			<font color=#00F>#define</font> INCHES(reading) <font color=#00F># convert CM to INCH</font><br>
+			<font color=#00F>#define</font> URCP(reading) <font color=#00F># convert CM to URCP</font><br>
+			<font color=#00F>#define</font> INCH_TO_CM(reading) <font color=#00F># convert INCH to CM</font><br>
+			<font color=#00F>#define</font> byte&nbsp;&nbsp;&nbsp;&nbsp;<font color=#00F>unsigned char</font><br>
+			</p>		
+		<h3>Functions</h3>
+			<p class="funcs">
+			<font color=#00F>void</font> delayms(<font color=#00F>unsigned int</font> ms) – pauses for a number of milliseconds.<br>
+		</p>	
+	</div><br>
+
+    <center><a href="#toc">Back to Contents</a></center>
+
+	<h3>Sensor-Level Drivers</h3>
+	<div class="driver"><h2><a name="sharpir">Sharp IR Sensor Driver (sharpir.h)</a></h2><hr> 
+		<p class="desc">The Sharp IR drivers implement functions for GP2D12, GP2D120 (short), 
+		and GP2A0Y02YK (long) sensors. The three GP2D12 infrared range sensor gives off an 
+		analog voltage inversely proportional to the distance to the object sensed. The 
+		GP2D12 sensor driver handles conversion of this analog voltage into a reading in centimeters.</p>
+		<h3>Functions</h3>
+			<p class="funcs">
+			<font color=#00F>void</font> gp2d12Init(<font color=#00F>char</font> channel) – initializes driver.<br>
+			<font color=#00F>int</font> gp2d12GetData(<font color=#00F>char</font> channel) - returns a reading from channel.<br>
+			<font color=#00F>void</font> gp2dShortInit(<font color=#00F>char</font> channel) – initializes driver.<br>
+			<font color=#00F>int</font> gp2dShortGetData(<font color=#00F>char</font> channel) - returns a reading from channel.<br>
+			<font color=#00F>void</font> gp2dLongInit(<font color=#00F>char</font> channel) – initializes driver.<br>
+			<font color=#00F>int</font> gp2dLongGetData(<font color=#00F>char</font> channel) - returns a reading from channel.<br>
+		</p>	
+	</div><br>
+
+	<div class="driver"><h2><a name="srf05">SRF-05 Sonar Ranger Sensor Driver (srf05.h)</a></h2><hr> 
+		<p class="desc">The SRF-05 sonar ranger from Devantech provides a single wire interface 
+		for triggering and receiving the time of flight data.<br><br>
+		<font color=#F00>Issues:</font> Currently is clock dependent. This should be fixed soon. 
+		Requires a 14.7546MHz clock. <!--A version for 8MHz clocks can be found in compat/sonar.h--></p>
+		<h3>Functions</h3>
+			<p class="funcs">
+			<font color=#00F>void</font> srf05Init(<font color=#00F>char</font> channel) – <br>
+			<font color=#00F>unsigned char</font> srf05GetData(<font color=#00F>char</font> channel) - returns a reading from channel.<br>
+			</p>	
+	</div><br>
+
+    <div class="driver"><h2><a name="maxbotix">Maxbotix Sonar Ranger Sensor Driver (maxbotix.h)</a></h2><hr> 
+		<p class="desc">The Maxbotix EZ family of sonar rangers provide a two wire interface 
+		for triggering and reading an analog distance.<br>
+		<h3>Functions</h3>
+			<p class="funcs">
+			<font color=#00F>void</font> maxbotixInit(<font color=#00F>char</font> control, <font color=#00F>char</font> analog) – Initializes a maxbotix sensor<br>
+			<font color=#00F>void</font> maxbotixPing(<font color=#00F>char</font> control) – causes the sensor to send out a ping. <br>
+			<font color=#00F>int</font> maxbotixGetData(<font color=#00F>char</font> analog) – returns a reading from analog port. User should ping first.<br>
+			</p>	
+	</div><br>
+
+	<div class="driver"><h2><a name="encoders">SRF-08 I2C Sonar Driver (srf08.h)</a></h2><hr> 
+		<p class="desc">Driver for the Devantech SRF-08 and SRF-02 I2C sonar ranging sensors. There can
+        be up to 16 devices on the bus, with addresses 0xE0-0xFF (even numbers for write, odd for read). 
+        You must call <i>Ping</i> before calling <i>Read</i>. Calls should be a minimum of 50ms apart. 
+        When calling these functions, the device number passed is the offset from the base:
+        <pre>    Device Address = Base Address (0xE0) + (2 * device_no)</pre></p>
+        <h3>Definitions</h3>
+            <table class="defs" border="0">
+			<tr><td width="300px"><font color=#00F>#define</font>SRF_ADDR</td><td>0xE0 <font color=#00F>// Base Address</font></td></tr>
+			<tr><td><font color=#00F>#define</font> SRF_COMMAND</td><td>0x00 <font color=#00F>// command register</font></td></tr>
+			<tr><td><font color=#00F>#define</font> SRF_LIGHT</td><td>0x01 <font color=#00F>// light sensor register</font></td></tr>
+			<tr><td><font color=#00F>#define</font> SRF_ECHO_H</td><td>0x02 <font color=#00F>// 1st echo high byte</font></td></tr>
+			<tr><td><font color=#00F>#define</font> SRF_ECHO_L</td><td>0x03 <font color=#00F>// 1st echo low byte</font></td></tr>
+			<tr><td><font color=#00F>#define</font> SRF_2ND_H</td><td>0x04 <font color=#00F>// 2nd echo high byte</font></td></tr>
+			<tr><td><font color=#00F>#define</font> SRF_2ND_L</td><td>0x05 <font color=#00F>// 2nd echo low byte</font></td></tr>
+			<!--<tr><td><font color=#00F>/* choices for units */</font></td></tr>-->
+            <!--<tr><td><font color=#00F>#define</font> SRF_CMD_INCH</td><td>0x50</td></tr>-->
+			<tr><td><font color=#00F>#define</font> SRF_CMD_CM</td><td>0x51</td></tr>
+			<!--<tr><td><font color=#00F>#define</font> SRF_CMD_MS</td><td>0x52</td></tr>-->
+			</table>
+		<h3>Functions</h3>
+			<p class="funcs">
+			<font color=#00F>void</font> srf08Init(<font color=#00F>void</font>) – initializes I2C bus.<br>
+            <!--<font color=#00F>void</font> srf08SetUnits(<font color=#00F>unsigned char</font> units) – Sets the units we wish to use - should be one of the values defined above.<br>-->
+            <font color=#00F>void</font> srf08GetVersion(<font color=#00F>unsigned char</font> device) – Gets the version of the sonar device.<br>
+            <font color=#00F>void</font> srf08Ping(<font color=#00F>unsigned char</font> device) – Pint the sonar before we read a distance back.<br>
+            <font color=#00F>void</font> srf08GetData(<font color=#00F>unsigned char</font> device) – Gets a reading from the sonar.<br>
+            </p>
+	</div><br>
+
+	<div class="driver"><h2><a name="i2ccmps">I2C Compass (cmps03.h)</a></h2><hr> 
+		<p class="desc">Driver for the Devantech CMPS-03 I2C compass.</p>
+		<h3>Definitions</h3>
+			<table class="defs" border="0">
+			<tr><td width="300px"><font color=#00F>#define</font> 
+				CMPS_ADDR /td><td>0xC0</td></tr>
+			<tr><td>// Register Definitions </td><td>&nbsp;</td></tr>
+			<tr><td><font color=#00F>#define</font> CMPS_VERSION</td><td>0x00</td></tr>
+			<tr><td><font color=#00F>#define</font> CMPS_BEARING</td><td>0x01</td></tr>
+			<tr><td><font color=#00F>#define</font> CMPS_BEAR_HI</td><td>0x02</td></tr>
+			<tr><td><font color=#00F>#define</font> CMPS_BEAR_LO </td><td>0x03</td></tr>
+			<tr><td><font color=#00F>#define</font> CMPS_CALIBRATE</td><td>0x0F</td></tr>
+			</table>
+		<h3>Functions</h3>
+			<p class="funcs">
+			<font color=#00F>void</font> cmps03Init() – initializes I2C bus.<br>
+			<font color=#00F>unsigned char</font> cmps03GetData() – reads a 
+				heading from compass (URCP BinaryRADianS 0-255).<br>
+			<font color=#00F>unsigned char</font> cmps03GetVer() – reads the version 
+				number from compass.<br>
+			</p>	
+	</div><br>
+
+	<div class="driver"><h2><a name="encoders">Encoders Driver (in device file)</a></h2><hr> 
+		<p class="desc">Uses INT0 and INT1 plus two additional pins to provide full 
+		quadrature encoder support. Still in development. See source code for details.</p>
+	</div><br>
+
+    <div class="driver"><h2><a name="avrcam">AVRCam Driver (avrcam.h)</a></h2><hr> 
+		<p class="desc">Driver for AVRCam. NOTE: This driver is still under development – 
+		and only for the ATMEGA324P. It currently defaults to using USART1 – but 
+		does not use serial1.h. Also note that names of functions in this driver are likely 
+		to change in future releases.</p>
+		<h3>Functions</h3>
+			<p class="funcs">
+			<font color=#00F>void</font> visionInit() – initializes AVRCam and serial 
+			     port 1. This will enable an interrupt
+				 routine that handles information from the camera.<br>
+			byte pingCam() – pings AVRCam, returns 1 if successful, 0 otherwise.<br>
+			<font color=#00F>void</font> passRawCam() – passes a raw image back to 
+				the PC (requires serial.h)<br>
+			<font color=#00F>void</font> enableTracking() – turns on tracking.<br>
+			<font color=#00F>void</font> disableTracking() – turns off tracking<br>
+			</p>	
+	</div><br>
+	
+    <center><a href="#toc">Back to Contents</a></center>
+
+	<h3>Output-Level Drivers</h3>
+	<div class="driver"><h2><a name="motor">Motor Driver (in device file)</a></h2><hr> 
+		<p class="desc">There are several different possible motor controller techniques 
+		depending on how the motor driver is connected to the controller and whether closed 
+		loop control is used. The interface below is the minimum specification that should
+		be implemented for ALL motor drivers 
+		(typically in a device file). Motor controls use the 8-bit TIMER0. <br><br>
+		For all motors, 255 is full speed forward, -255 is full speed backward, and 0 is stopped.
+		Note that we can therfore call something like<br><pre>
+        motorRight(BACKWARD * HALF_SPEED);</pre>		
+		to go backwards at half speed.
+		</p>
+		<h3>Definitions</h3>
+			<table class="defs" border="0">
+			<tr><td width="300px"><font color=#00F>#define</font> FORWARD</td><td>1</td></tr>
+			<tr><td><font color=#00F>#define</font> BACKWARD</td><td>-1</td></tr>
+			<tr><td><font color=#00F>#define</font> FULL_SPEED</td><td>255</td></tr>
+			<tr><td><font color=#00F>#define</font> HALF_SPEED</td><td>127</td></tr>
+			<tr><td><font color=#00F>#define</font> REG_SPEED</td><td>varies by device</td></tr>
+			<tr><td><font color=#00F>#define</font> STOP</td><td>0</td></tr>
+			</table>	
+		<h3>Functions</h3>
+			<p class="funcs">
+			<font color=#00F>void</font> motorInit(<font color=#00F>void</font>) – initializes the PWM drivers.<br>
+			<font color=#00F>void</font> motorStop(<font color=#00F>void</font>) – stops both motors, saves values for a resume.<br>
+			<font color=#00F>void</font> motorResume(<font color=#00F>void</font>) – restarts both motors at previous speed (after a stop).<br>
+			<font color=#00F>void</font> motorLeft(<font color=#00F>int</font> speed) – 255 = full forward, -255 = full backward, 0 = stop.<br>
+			<font color=#00F>void</font> motorRight(<font color=#00F>int</font> speed) – 255 = full forward, -255 = full backward, 0 = stop.<br>
+			<font color=#00F>void</font> motors(<font color=#00F>int</font> lspeed, <font color=#00F>int</font> rspeed) – set both motors at once.<br>
+			<br><i>Optional (requires encoders):</i><br>
+			<font color=#00F>void</font> moveX(<font color=#00F>int</font> inches) – closed loop move X inches (forward is positive).<br>
+			<font color=#00F>void</font> turnX(<font color=#00F>int</font> angle) – closed loop turn of an angle, in degrees (left is positive).
+			</p>
+	</div><br>
+
+	<div class="driver"><h2><a name="servo">AX-12 Servo Driver (ax12.h)</a></h2><hr> 
+		<p class="desc">The servo system uses USART1 on the ATMEGA324P to control
+		AX-12 servos. See the source code for details.</p>
+	</div><br>
+
+	<div class="driver"><h2><a name="servo">Servo Driver (servo.h)</a></h2><hr> 
+		<p class="desc">The servo system uses the 16-bit TIMER1 to power 2 servos. SERV0_A and SERVO_B
+        are pin definitions for PD5 and PD4 (PB1 and PB2 on the m168), repectively. Range of servos is -90 to 90 degrees, center  
+        adjustment is best determined by trial and error. Invert will change the direction around the center
+        point. <br><br>
+        <font color=#F00>Issues:</font> Currently is clock dependent. This should be fixed soon. 
+		Requires a 14.7546MHz clock. </p>
+        <h3>Functions</h3>
+			<p class="funcs">
+			<font color=#00F>void</font> servoInit(<font color=#00F>int</font> channel, <font color=#00F>int</font> centerAdj, 
+                <font color=#00F>int</font> invert) – 
+                Initializes a servo, with a center adjustment and invert.<br>
+			<font color=#00F>void</font> servoSetPosition(<font color=#00F>int</font> channel, <font color=#00F>int</font> position) – 
+                Sets position of servo -90 to 90 degrees.<br>
+			<font color=#00F>void</font> servoGetPosition(<font color=#00F>int</font> channel) – Reads position from memory (not from servo!).<br>
+			</p>
+	</div><br>
+
+	<div class="driver"><h2><a name="sp03">Speech Synthesizer Driver (sp03.h)</a></h2><hr> 
+		<p class="desc">Provides a very simple connection to the Devantech SP03 via I2C. 
+            Currently only plays the pre-defined phrases held in memory on the SP03, there
+            is not yet support for buffer loading.</p>
+        <h3>Definitions</h3>
+			<table class="defs" border="0">
+			<tr><td width="300px"><font color=#00F>#define</font> SP03_ADDR</td><td>0xC4</td></tr>
+			<tr><td><font color=#00F>#define</font> SP03_CMD_REG</td><td>0x00</td></tr>
+			<tr><td><font color=#00F>#define</font> SP03_VER_REG</td><td>0x01</td></tr>
+			<tr><td><font color=#00F>#define</font> HALF_SPEED</td><td>127</td></tr>
+			<tr><td><font color=#00F>#define</font> REG_SPEED</td><td>varies by device</td></tr>
+			<tr><td><font color=#00F>#define</font> STOP</td><td>0</td></tr>
+			</table>	
+		<h3>Functions</h3>
+			<p class="funcs">
+			<font color=#00F>void</font> sp03Init(<font color=#00F>void</font>) – Initializes I2C bus, SP03 needs no initialization.<br>
+			<font color=#00F>void</font> sp03GetData(<font color=#00F>void</font>) – Reads status, 0 = done.<br>
+			<font color=#00F>void</font> sp03GetVer(<font color=#00F>void</font>) – Reads version of SP03.<br>
+			<font color=#00F>void</font> sp03Speak(<font color=#00F>unsigned char</font> phrase) – Speaks a pre-defined phrase, 1-30.<br>
+			</p>
+	</div><br>
+
+    <center><a href="#toc">Back to Contents</a></center>
+
+	<!--<h3><a name="xrseries">XR-Series Control Architecture</a></h3><hr>
+	The XR-Series control is a complete robot environment that rides on top of AVRRA 
+	and provides an operating environment for robots. It is still under development.	
+	It is a lightweight hybrid architecture for robots with PC connectivity. 
+	Currently completely lacking in documentation…<br><br>
+	
+	project.h – user files…<br><br>
+
+	behavior.h – implements the behavior switch <br>
+	main.h – pretty much nothing<br>
+	xrseries2.h – the 2nd generation parser, initialization loop, and runtime loop.<br>
+	xrprint.h – system print utilities<br><br>
+
+	default.h – Several useful functions<br>
+	xr1.h<br>
+	xr1state.h<br>
+    </div>-->
+    
+    <h3><a name="awards">Awards and Distinctions</a></h3><hr>
+	AVRRA has been used in the following projects:<br>
+    <ul>
+        <li><b>Little Green Machine 3</b> - Fire fighting robot, winner of the 2008 Canadian National Robot Games.</li>
+    </ul><br>
+
+    <div id="footer">
+	<hr><center>Copyright 2008-2009 Michael E Ferguson</center><br><br></div>
+    
+  </div>
+</body>

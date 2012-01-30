@@ -1,0 +1,23 @@
+a:link,a:visited,a:active {color:#0000FF;text-decoration:none;}
+
+/* gray, space top and bottom body {padding:10px 0 10px 0;}*/
+#page {width:800px;margin:auto;}
+
+/* license */
+#license {background:#C9C299;padding:10px;}
+
+/* main content on a white screen */
+#content {}
+
+.info {background:#DDDDDD;padding:10px;}
+.info h3 {margin: 10px 0 0 0;}
+.info p {margin: 10px 0 0 0;}
+
+/*.driver {background:#CCFFCC;padding:10px;}8BB381*/
+.driver {background:#C9C299;padding:10px;}
+.driver h3 {margin: 10px 0 0 0;}
+.driver p {margin: 10px 0 0 0;}
+.defs {background:#DDDDDD;padding:10px;margin:0;}
+.funcs {background:#DDDDDD;padding:10px;margin:0}
+
+h1, h2 {margin:0; padding:0;}
